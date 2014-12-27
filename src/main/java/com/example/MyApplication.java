@@ -1,6 +1,7 @@
 package com.example;
 
 import io.dropwizard.Application;
+import io.dropwizard.assets.AssetsBundle;
 import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
@@ -25,9 +26,11 @@ public class MyApplication extends Application<MyAppConfiguration> {
                            .enableAutoConfig(getClass().getPackage().getName())
                            .setConfigClass(MyAppConfiguration.class).build();
         bootstrap.addBundle(guiceBundle);
+        bootstrap.addBundle(new AssetsBundle("/assets/", "/", "index.html"));
     }
 
     @Override
     public void run(MyAppConfiguration Configuration, Environment environment) {
+        environment.jersey().setUrlPattern("/api/*");
     }
 }

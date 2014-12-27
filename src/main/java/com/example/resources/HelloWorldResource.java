@@ -28,18 +28,18 @@ import com.google.inject.name.Named;
 public class HelloWorldResource implements ValueEventListener{
 
     private final String     template;
-    private       String     defaultName;
+    private       String     value;
     private final AtomicLong counter;
     private final Firebase   firebase;
 
     final Logger logger = LoggerFactory.getLogger(HelloWorldResource.class);
 
     @Inject
-    public HelloWorldResource(@Named("template") String template, @Named("defaultName") String defaultName,
+    public HelloWorldResource(@Named("template") String template, @Named("value") String defaultName,
                                      @Named("firebase") Firebase firebase) {
         logger.info("Creating a new HelloWorldResource!");
         this.template = template;
-        this.defaultName = defaultName;
+        this.value = defaultName;
         this.counter = new AtomicLong();
         this.firebase = firebase;
         firebase.child("Saying").addValueEventListener(this);
@@ -50,14 +50,14 @@ public class HelloWorldResource implements ValueEventListener{
     public Saying sayHello(@QueryParam("name") Optional<String> name) {
         Long counter = this.counter.incrementAndGet();
         logger.info("Saying Hello " + name.or("None..."));
-        firebase.child("Saying").setValue(name.or(defaultName));
-        final String value = String.format(template, name.or(defaultName));
+        firebase.child("Saying").setValue(name.or(this.value));
+        final String value = String.format(template, name.or(this.value));
         return new Saying(counter, value);
     }
 
     @Override
     public void onDataChange(DataSnapshot dataSnapshot) {
-        defaultName = (String) dataSnapshot.getValue();
+        this.value = (String) dataSnapshot.getValue();
     }
 
     @Override
