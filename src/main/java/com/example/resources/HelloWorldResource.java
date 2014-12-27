@@ -50,9 +50,7 @@ public class HelloWorldResource implements ValueEventListener{
     public Saying sayHello(@QueryParam("name") Optional<String> name) {
         Long counter = this.counter.incrementAndGet();
         logger.info("Saying Hello " + name.or("None..."));
-        if (name.isPresent()) {
-            firebase.child("Saying").setValue(name);
-        }
+        firebase.child("Saying").setValue(name.or(defaultName));
         final String value = String.format(template, name.or(defaultName));
         return new Saying(counter, value);
     }
