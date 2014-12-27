@@ -1,0 +1,2 @@
+DropWizard-Guice-Firebase
+=========================
